@@ -1,0 +1,15 @@
+html {
+	cursor: grab; /* Plan to conditionally change to pointer */
+	overflow: hidden;
+}
+
+#canvas {
+	position: absolute;
+	/*
+	Causes stretching of canvas
+	width: 100vw;
+	height: 100vh;
+	*/
+	top: 0;
+	left: 0;
+}
