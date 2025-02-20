@@ -49,15 +49,29 @@ export class Camera {
 		this.scaleFactor = newScale;
 	}
 
-	tempRotate(deltaTheta) {
-		this.theta += deltaTheta;
+	// delta is an angle in radians (clockwise)
+	// x and y are the center of the rotation in pixels
+	rotate(delta, x, y) {
+		// We efficiently multiply rotation and scale matrix
+		this.theta += delta;
 		this.transform[0] = this.scaleFactor * Math.cos(this.theta);
 		this.transform[1] = this.scaleFactor * Math.sin(this.theta);
 		this.transform[2] = -this.transform[1];
 		this.transform[3] = this.transform[0];
-		this.ctx.setTransform(...this.transform);
+		// Room for optimization with algebra and geometry if necessary
+		let relX = x - this.transform[4];
+		let relY = y - this.transform[5];
+		let rho = Math.sqrt(relX*relX + relY*relY);
+		let phiPrime = Math.atan2(relY, relX) + delta;
+		// rho is at angle phi from the +x axis
+		// delta is the same for rho and theta
+		// since both start from the same point (the origin)
+		// We can use this fact to calculate how much we need to translate
+		// Once again translate does our setTransform call for us
+		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
 	}
 
+	// TODO Add logic for rotations
 	// Helper function to convert coordinates like offsetX, offsetY
 	// to x and y values on the canvas accounting for transformations
 	screenToWorld(x, y) {
