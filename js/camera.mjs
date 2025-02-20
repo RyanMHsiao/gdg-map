@@ -1,29 +1,59 @@
 // The purpose of this file is to abstract away most of the math
 // Read up on affine transformations to help you understand it
 // Written by Ryan Hsiao, so ask me if you need help
+
 export class Camera {
+	// Note that we will immediately apply all transformations
+	// This can be changed for optimization if needed
 	ctx;
 
-	translateX = 0;
-	translateY = 0;
-
+	// Affine transformation matrix
+	// ( a c e ) ( x )
+	// ( b d f ) ( y )
+	// ( 0 0 1 ) ( 1 )
+	// More info here: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setTransform
+	transform = [1, 0, 0, 1, 0, 0];
+	// Our transformations should always preserve angles,
+	// so we have a meaningful scale and theta
 	scaleFactor = 1;
+	// theta is a clockwise angle measured in radians
+	// TODO Implement rotation logic
+	theta = 0;
 
 	constructor(ctx) {
 		this.ctx = ctx;
 	}
 
+	// x and y are change in pointer position in screen pixels
 	translate(x, y) {
-		let scaledX = x / this.scaleFactor;
-		let scaledY = y / this.scaleFactor;
-		// Translate based only on the change
-		this.ctx.translate(scaledX, scaledY);
-		// Store cumulative change for scales and rotates
-		this.translateX += scaledX;
-		this.translateY += scaledY;
+		this.transform[4] += x / this.scaleFactor;
+		this.transform[5] += y / this.scaleFactor;
+		this.ctx.setTransform(...this.transform);
 	}
 
+	// delta is a scale amount tuned for the wheel event
+	// x and y are the center of the scale in screen pixels
 	scale(delta, x, y) {
+		// TODO Change constants to something configurable
+		let newScale = this.scaleFactor + delta * -0.0001;
+		newScale = Math.min(Math.max(0.125, newScale), 4);
+		let relativeScale = newScale / this.scaleFactor;
+		for (let i = 0; i < 6; ++i) {
+			this.transform[i] *= relativeScale;
+		}
+		// At this point, we have kept the top left of the screen a fixed point
+		// We just translate a little more to keep the pointer position fixed
+		// Note that we multiply this by the old scaleFactor since we are working
+		// in screen pixels with x and y
+		let centerFactor = this.scaleFactor - newScale;
+		// The this.translate call also sets transform for us
+		this.translate(x * centerFactor, y * centerFactor);
+		this.ctx.setTransform(...this.transform);
+		this.scaleFactor = newScale;
+		/*
+		this.translate(-x * (relativeScale - 1), -y * (relativeScale - 1));
+		*/
+		/*
 		let prevScaleFactor = this.scaleFactor;
 		let prevTranslateX = this.translateX;
 		let prevTranslateY = this.translateY;
@@ -43,13 +73,14 @@ export class Camera {
 		this.translateX -= x * (1 - prevScaleFactor / this.scaleFactor);
 		this.translateY -= y * (1 - prevScaleFactor / this.scaleFactor);
 		this.ctx.translate(this.translateX, this.translateY);
+		*/
 	}
 
 	// Helper function to convert coordinates like offsetX, offsetY
 	// to x and y values on the canvas accounting for transformations
 	screenToWorld(x, y) {
-		x -= this.translateX * this.scaleFactor;
-		y -= this.translateY * this.scaleFactor;
+		x -= this.transform[4];
+		y -= this.transform[5];
 		x /= this.scaleFactor;
 		y /= this.scaleFactor;
 		return [x, y];

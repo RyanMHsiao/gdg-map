@@ -35,7 +35,7 @@ $("#canvas").on({
 	},*/
 	// Not supported on all browsers, add buttons as alternative
 	wheel: function (event) {
-		camera.scale(event.originalEvent.deltaY / 100, event.offsetX, event.offsetY);
+		camera.scale(event.originalEvent.deltaY, event.offsetX, event.offsetY);
 		draw();
 	},
 	/*
