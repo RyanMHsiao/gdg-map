@@ -24,15 +24,15 @@ export class Camera {
 		this.ctx = ctx;
 	}
 
-	// x and y are change in pointer position in screen pixels
+	// x and y are change in pointer position in pixels
 	translate(x, y) {
-		this.transform[4] += x / this.scaleFactor;
-		this.transform[5] += y / this.scaleFactor;
+		this.transform[4] += x;
+		this.transform[5] += y;
 		this.ctx.setTransform(...this.transform);
 	}
 
 	// delta is a scale amount tuned for the wheel event
-	// x and y are the center of the scale in screen pixels
+	// x and y are the center of the scale in pixels
 	scale(delta, x, y) {
 		// TODO Change constants to something configurable
 		let newScale = this.scaleFactor + delta * -0.0001;
@@ -43,9 +43,7 @@ export class Camera {
 		}
 		// At this point, we have kept the top left of the screen a fixed point
 		// We just translate a little more to keep the pointer position fixed
-		// Note that we multiply this by the old scaleFactor since we are working
-		// in screen pixels with x and y
-		let centerFactor = this.scaleFactor - newScale;
+		let centerFactor = 1 - relativeScale;
 		// The this.translate call also sets transform for us
 		this.translate(x * centerFactor, y * centerFactor);
 		this.ctx.setTransform(...this.transform);
