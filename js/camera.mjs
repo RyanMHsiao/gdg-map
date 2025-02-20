@@ -17,7 +17,6 @@ export class Camera {
 	// so we have a meaningful scale and theta
 	scaleFactor = 1;
 	// theta is a clockwise angle measured in radians
-	// TODO Implement rotation logic
 	theta = 0;
 
 	constructor(ctx) {
@@ -48,30 +47,15 @@ export class Camera {
 		this.translate(x * centerFactor, y * centerFactor);
 		this.ctx.setTransform(...this.transform);
 		this.scaleFactor = newScale;
-		/*
-		this.translate(-x * (relativeScale - 1), -y * (relativeScale - 1));
-		*/
-		/*
-		let prevScaleFactor = this.scaleFactor;
-		let prevTranslateX = this.translateX;
-		let prevTranslateY = this.translateY;
-		[x, y] = this.screenToWorld(x, y);
-		// Calculate the new scale factor
-		this.scaleFactor += delta * -0.01;
-		this.scaleFactor = Math.min(Math.max(0.125, this.scaleFactor), 4);
-		console.log(prevScaleFactor, this.scaleFactor, x, y);
-		// Reset and scale centered on origin
-		this.ctx.resetTransform();
-		this.ctx.scale(this.scaleFactor, this.scaleFactor);
-		// Adjust offsets for new scale and translate
-		this.translateX *= prevScaleFactor / this.scaleFactor;
-		this.translateY *= prevScaleFactor / this.scaleFactor;
-		// Right now, the origin is a fixed point
-		// Now we translate further so the mouse position is fixed
-		this.translateX -= x * (1 - prevScaleFactor / this.scaleFactor);
-		this.translateY -= y * (1 - prevScaleFactor / this.scaleFactor);
-		this.ctx.translate(this.translateX, this.translateY);
-		*/
+	}
+
+	tempRotate(deltaTheta) {
+		this.theta += deltaTheta;
+		this.transform[0] = this.scaleFactor * Math.cos(this.theta);
+		this.transform[1] = this.scaleFactor * Math.sin(this.theta);
+		this.transform[2] = -this.transform[1];
+		this.transform[3] = this.transform[0];
+		this.ctx.setTransform(...this.transform);
 	}
 
 	// Helper function to convert coordinates like offsetX, offsetY
