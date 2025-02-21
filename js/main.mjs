@@ -50,33 +50,43 @@ $("#canvas").on({
 // Using Hammer.js for touch events and mouse panning
 let mc = new Hammer.Manager($("#canvas")[0], {
 	recognizers: [
-		// Rotation not ready yet
-		// [Hammer.Rotate],
+		[Hammer.Rotate],
 		[Hammer.Pinch],
 		[Hammer.Pan, {threshold: 0}]
 	]
 });
 
+// TODO Fix erratic behavior when releasing from 2 pointers to 1
 // Hammer.js gives us the cumulative delta, so we need to differentiate
-let prevPan = [0, 0];
+let prevPanX, prevPanY;
+mc.on("panstart", function (event) {
+    prevPanX = prevPanY = 0;
+});
 mc.on("pan", function (event) {
-	camera.translate(event.deltaX - prevPan[0], event.deltaY - prevPan[1]);
-	draw();
-	if (event.isFinal) {
-		// Reset for the next pan event
-		prevPan[0] = prevPan[1] = 0;
-	} else {
-		prevPan[0] = event.deltaX;
-		prevPan[1] = event.deltaY;
-	}
+    camera.translate(event.deltaX - prevPanX, event.deltaY - prevPanY);
+    draw();
+    prevPanX = event.deltaX;
+    prevPanY = event.deltaY;
 });
 
-// Not yet implemented because of unanswered design questions
-// Mainly, what the fixed point should be
-// Options are pinch center, screen center, and user location
-// There are also problems with preventing a pinch event from turning into a pan
-// since a user can easily fat-finger that with the current lack of pan threshold
+let prevRotate;
+mc.on("rotatestart", function (event) {
+    prevRotate = event.rotation;
+});
+mc.on("rotate", function (event) {
+	console.log("rotate", event.rotation, event.center);
+    let phi = Math.PI * (event.rotation - prevRotate) / 180;
+    camera.rotate(phi, event.center.x, event.center.y);
+    draw();
+    prevRotate = event.rotation;
+});
+
+let prevPinchDistance;
+mc.on("pinchstart", function (event) {
+	prevPinchDistance = event.distance;
+});
 mc.on("pinch", function (event) {
+	//camera.scale(
 	console.log(event.deltaX, event.deltaY, event.center, event.distance, event.isFinal);
 });
 
