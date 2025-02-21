@@ -30,13 +30,14 @@ export class Camera {
 		this.ctx.setTransform(...this.transform);
 	}
 
-	// delta is a scale amount tuned for the wheel event
+	// relativeScale is how much to scale relative to previous scale
 	// x and y are the center of the scale in pixels
-	scale(delta, x, y) {
-		// TODO Change constants to something configurable
-		let newScale = this.scaleFactor + delta * -0.0001;
+	scale(relativeScale, x, y) {
+		let newScale = this.scaleFactor * relativeScale;
+		// TODO Make scale limits configurable
 		newScale = Math.min(Math.max(0.125, newScale), 4);
-		let relativeScale = newScale / this.scaleFactor;
+		// Change value if newScale got clamped
+		relativeScale = newScale / this.scaleFactor;
 		for (let i = 0; i < 6; ++i) {
 			this.transform[i] *= relativeScale;
 		}

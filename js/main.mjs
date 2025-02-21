@@ -20,38 +20,21 @@ $(window).on("resize", function (e) {
 	draw();
 });
 
-// Using jQuery to handle mouse-based events
 $("#canvas").on({
-	// This logic handled by Hammer.js
-	/*
-	mousemove: function (event) {
-		if (event.buttons > 0) {
-			// Below line could be used to check for middle mouse button
-			// if (event.button == 1) {
-			// Middle mouse button usage fired the wheel event instead in my testing
-			camera.translate(event.originalEvent.movementX, event.originalEvent.movementY);
-			draw();
-		}
-	},*/
 	// Not supported on all browsers, add buttons as alternative
 	wheel: function (event) {
-		camera.scale(event.originalEvent.deltaY, event.offsetX, event.offsetY);
+		// TODO Change formula to feel smoother, probably exponential
+		let scaleFactor = 1 + event.originalEvent.deltaY * -0.0004
+		camera.scale(scaleFactor, event.offsetX, event.offsetY);
 		draw();
 	},
-	/*
-	// Debugging help
-	click: function (event) {
-		console.log(event);
-		console.log(camera.screenToWorld(event.offsetX, event.offsetY));
-	}
-	*/
 });
 
 // Using Hammer.js for touch events and mouse panning
 let mc = new Hammer.Manager($("#canvas")[0], {
 	recognizers: [
 		[Hammer.Rotate],
-		[Hammer.Pinch],
+		[Hammer.Pinch, {}, ['rotate']],
 		[Hammer.Pan, {threshold: 0}]
 	]
 });
@@ -74,20 +57,32 @@ mc.on("rotatestart", function (event) {
     prevRotate = event.rotation;
 });
 mc.on("rotate", function (event) {
-	console.log("rotate", event.rotation, event.center);
     let phi = Math.PI * (event.rotation - prevRotate) / 180;
     camera.rotate(phi, event.center.x, event.center.y);
     draw();
     prevRotate = event.rotation;
 });
 
-let prevPinchDistance;
+let prevPinchScale;
+//let initPinchCenter;
 mc.on("pinchstart", function (event) {
-	prevPinchDistance = event.distance;
+	prevPinchScale = event.scale;
+	//initPinchCenter = event.center;
+	//console.log("pinchstart", event.distance, event);
+	//console.log("pinchstart", event.distance. event.center, event.changedPointers(
 });
 mc.on("pinch", function (event) {
-	//camera.scale(
-	console.log(event.deltaX, event.deltaY, event.center, event.distance, event.isFinal);
+	//console.log(event.distance, event);
+	/*
+	if (event.distance <= limit) {
+		return;
+	}
+	*/
+	let relativeScale = event.scale / prevPinchScale;
+	//console.log(relativeScale);
+	//camera.scale(relativeScale, initPinchCenter.x, initPinchCenter.y);
+	camera.scale(relativeScale, event.center.x, event.center.y);
+	prevPinchScale = event.scale;
 });
 
 resize();
