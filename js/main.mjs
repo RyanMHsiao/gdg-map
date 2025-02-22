@@ -40,16 +40,32 @@ let mc = new Hammer.Manager($("#canvas")[0], {
 });
 
 // TODO Fix erratic behavior when releasing from 2 pointers to 1
+// This has been mitigated, but this can still happen if you try this:
+// One finger starts panning upwards
+// Simultaneously stop that finger in place and add another finger moving upwards
+// Release both fingers at once
+// This causes a jump in the panning.
 // Hammer.js gives us the cumulative delta, so we need to differentiate
 let prevPanX, prevPanY;
 mc.on("panstart", function (event) {
-    prevPanX = prevPanY = 0;
+	console.log("panstart");
+    prevPanX = event.deltaX;
+	prevPanY = event.deltaY;
 });
 mc.on("pan", function (event) {
-    camera.translate(event.deltaX - prevPanX, event.deltaY - prevPanY);
-    draw();
-    prevPanX = event.deltaX;
-    prevPanY = event.deltaY;
+	if (prevPanX !== null) {
+		console.log("pan");
+		camera.translate(event.deltaX - prevPanX, event.deltaY - prevPanY);
+		draw();
+		prevPanX = event.deltaX;
+		prevPanY = event.deltaY;
+	} else {
+		console.log("failed pan");
+	}
+});
+mc.on("panend", function (event) {
+	console.log("panend");
+	prevPanX = prevPanY = null;
 });
 
 let prevRotate;
@@ -64,25 +80,18 @@ mc.on("rotate", function (event) {
 });
 
 let prevPinchScale;
-//let initPinchCenter;
 mc.on("pinchstart", function (event) {
+	console.log("pinchstart");
 	prevPinchScale = event.scale;
-	//initPinchCenter = event.center;
-	//console.log("pinchstart", event.distance, event);
-	//console.log("pinchstart", event.distance. event.center, event.changedPointers(
 });
 mc.on("pinch", function (event) {
-	//console.log(event.distance, event);
-	/*
-	if (event.distance <= limit) {
-		return;
-	}
-	*/
+	console.log("pinch");
 	let relativeScale = event.scale / prevPinchScale;
-	//console.log(relativeScale);
-	//camera.scale(relativeScale, initPinchCenter.x, initPinchCenter.y);
 	camera.scale(relativeScale, event.center.x, event.center.y);
 	prevPinchScale = event.scale;
+});
+mc.on("pinchend", function (event) {
+	console.log("panend");
 });
 
 resize();
