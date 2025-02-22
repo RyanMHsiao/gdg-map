@@ -5,6 +5,7 @@ html {
 
 #canvas {
 	position: absolute;
+	z-index: 0;
 	/*
 	Causes stretching of canvas
 	width: 100vw;
@@ -12,4 +13,18 @@ html {
 	*/
 	top: 0;
 	left: 0;
+}
+
+.hidden-image {
+	z-index: -100;
+	visibility: hidden;
+}
+
+#compass {
+	position: absolute;
+	z-index: 100;
+	background-color: white;
+	top: max(5vh, 5vw);
+	left: max(5vh, 5vw);
+	font-size: 20pt;
 }

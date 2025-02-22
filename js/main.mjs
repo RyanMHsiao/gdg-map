@@ -20,64 +20,78 @@ $(window).on("resize", function (e) {
 	draw();
 });
 
-// Using jQuery to handle mouse-based events
 $("#canvas").on({
-	// This logic handled by Hammer.js
-	/*
-	mousemove: function (event) {
-		if (event.buttons > 0) {
-			// Below line could be used to check for middle mouse button
-			// if (event.button == 1) {
-			// Middle mouse button usage fired the wheel event instead in my testing
-			camera.translate(event.originalEvent.movementX, event.originalEvent.movementY);
-			draw();
-		}
-	},*/
 	// Not supported on all browsers, add buttons as alternative
 	wheel: function (event) {
-		camera.scale(event.originalEvent.deltaY, event.offsetX, event.offsetY);
+		// TODO Change formula to feel smoother, probably exponential
+		let scaleFactor = 1 + event.originalEvent.deltaY * -0.0004
+		camera.scale(scaleFactor, event.offsetX, event.offsetY);
 		draw();
 	},
-	/*
-	// Debugging help
-	click: function (event) {
-		console.log(event);
-		console.log(camera.screenToWorld(event.offsetX, event.offsetY));
-	}
-	*/
 });
 
 // Using Hammer.js for touch events and mouse panning
 let mc = new Hammer.Manager($("#canvas")[0], {
 	recognizers: [
-		// Rotation not ready yet
-		// [Hammer.Rotate],
-		[Hammer.Pinch],
+		[Hammer.Rotate],
+		[Hammer.Pinch, {}, ['rotate']],
 		[Hammer.Pan, {threshold: 0}]
 	]
 });
 
+// TODO Fix erratic behavior when releasing from 2 pointers to 1
+// This has been mitigated, but this can still happen if you try this:
+// One finger starts panning upwards
+// Simultaneously stop that finger in place and add another finger moving upwards
+// Release both fingers at once
+// This causes a jump in the panning.
 // Hammer.js gives us the cumulative delta, so we need to differentiate
-let prevPan = [0, 0];
+let prevPanX, prevPanY;
+mc.on("panstart", function (event) {
+	//console.log("panstart");
+    prevPanX = event.deltaX;
+	prevPanY = event.deltaY;
+});
 mc.on("pan", function (event) {
-	camera.translate(event.deltaX - prevPan[0], event.deltaY - prevPan[1]);
-	draw();
-	if (event.isFinal) {
-		// Reset for the next pan event
-		prevPan[0] = prevPan[1] = 0;
+	if (prevPanX !== null) {
+		//console.log("pan");
+		camera.translate(event.deltaX - prevPanX, event.deltaY - prevPanY);
+		draw();
+		prevPanX = event.deltaX;
+		prevPanY = event.deltaY;
 	} else {
-		prevPan[0] = event.deltaX;
-		prevPan[1] = event.deltaY;
+		//console.log("failed pan");
 	}
 });
+mc.on("panend", function (event) {
+	//console.log("panend");
+	prevPanX = prevPanY = null;
+});
 
-// Not yet implemented because of unanswered design questions
-// Mainly, what the fixed point should be
-// Options are pinch center, screen center, and user location
-// There are also problems with preventing a pinch event from turning into a pan
-// since a user can easily fat-finger that with the current lack of pan threshold
+let prevRotate;
+mc.on("rotatestart", function (event) {
+    prevRotate = event.rotation;
+});
+mc.on("rotate", function (event) {
+    let phi = Math.PI * (event.rotation - prevRotate) / 180;
+    camera.rotate(phi, event.center.x, event.center.y);
+    draw();
+    prevRotate = event.rotation;
+});
+
+let prevPinchScale;
+mc.on("pinchstart", function (event) {
+	//console.log("pinchstart");
+	prevPinchScale = event.scale;
+});
 mc.on("pinch", function (event) {
-	console.log(event.deltaX, event.deltaY, event.center, event.distance, event.isFinal);
+	//console.log("pinch");
+	let relativeScale = event.scale / prevPinchScale;
+	camera.scale(relativeScale, event.center.x, event.center.y);
+	prevPinchScale = event.scale;
+});
+mc.on("pinchend", function (event) {
+	//console.log("panend");
 });
 
 resize();
@@ -86,3 +100,4 @@ draw();
 // Debugging help
 window.draw = draw;
 window.camera = camera;
+window.compass = compass;
