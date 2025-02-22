@@ -80,8 +80,7 @@ mc.on("rotate", function (event) {
     camera.rotate(phi, event.center.x, event.center.y);
     draw();
     prevRotate = event.rotation;
-	compass.theta = Math.PI-camera.theta;
-	compass.updateRotation();
+	compass.updateRotation(Math.PI-camera.theta);
 });
 
 let prevPinchScale;
