@@ -48,23 +48,23 @@ let mc = new Hammer.Manager($("#canvas")[0], {
 // Hammer.js gives us the cumulative delta, so we need to differentiate
 let prevPanX, prevPanY;
 mc.on("panstart", function (event) {
-	console.log("panstart");
+	//console.log("panstart");
     prevPanX = event.deltaX;
 	prevPanY = event.deltaY;
 });
 mc.on("pan", function (event) {
 	if (prevPanX !== null) {
-		console.log("pan");
+		//console.log("pan");
 		camera.translate(event.deltaX - prevPanX, event.deltaY - prevPanY);
 		draw();
 		prevPanX = event.deltaX;
 		prevPanY = event.deltaY;
 	} else {
-		console.log("failed pan");
+		//console.log("failed pan");
 	}
 });
 mc.on("panend", function (event) {
-	console.log("panend");
+	//console.log("panend");
 	prevPanX = prevPanY = null;
 });
 
@@ -81,17 +81,17 @@ mc.on("rotate", function (event) {
 
 let prevPinchScale;
 mc.on("pinchstart", function (event) {
-	console.log("pinchstart");
+	//console.log("pinchstart");
 	prevPinchScale = event.scale;
 });
 mc.on("pinch", function (event) {
-	console.log("pinch");
+	//console.log("pinch");
 	let relativeScale = event.scale / prevPinchScale;
 	camera.scale(relativeScale, event.center.x, event.center.y);
 	prevPinchScale = event.scale;
 });
 mc.on("pinchend", function (event) {
-	console.log("panend");
+	//console.log("panend");
 });
 
 resize();
