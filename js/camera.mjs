@@ -2,11 +2,10 @@
 // Read up on affine transformations to help you understand it
 // Written by Ryan Hsiao, so ask me if you need help
 
-export class Camera {
-	// Note that we will immediately apply all transformations
-	// This can be changed for optimization if needed
-	ctx;
+// Compass stuff. The organization is weird, hopefully it makes sense to place it here
+import { Compass } from "./compass.mjs";
 
+export class Camera {
 	// Affine transformation matrix
 	// ( a c e ) ( x )
 	// ( b d f ) ( y )
@@ -19,8 +18,15 @@ export class Camera {
 	// theta is a clockwise angle measured in radians
 	theta = 0;
 
+	// Note that we will immediately apply all transformations
+	// This can be changed for optimization if needed
+	ctx;
+	// Compass is here so that we can link it to the canvas transformations
+	compass;
+
 	constructor(ctx) {
 		this.ctx = ctx;
+		this.compass = new Compass(Math.PI, this);
 	}
 
 	// x and y are change in pointer position in pixels
@@ -52,7 +58,8 @@ export class Camera {
 
 	// delta is an angle in radians (clockwise)
 	// x and y are the center of the rotation in pixels
-	rotate(delta, x, y) {
+	// skipCompass skips updating the compass if rotation is called from compass
+	rotate(delta, x, y, skipCompass) {
 		// We efficiently multiply rotation and scale matrix
 		this.theta += delta;
 		this.transform[0] = this.scaleFactor * Math.cos(this.theta);
@@ -70,6 +77,9 @@ export class Camera {
 		// We can use this fact to calculate how much we need to translate
 		// Once again translate does our setTransform call for us
 		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
+		if (!skipCompass) {
+			this.compass.updateRotation(Math.PI - this.theta);
+		}
 	}
 
 	// TODO Add logic for rotations

@@ -2,12 +2,9 @@
 // We may want to move some of the logic to a separate file later on
 
 import { Camera } from "./camera.mjs";
-import { Compass } from "./compass.mjs";
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
-
-const compass = new Compass(Math.PI);
 
 function draw() {
 	ctx.drawImage($("#background-map")[0], 0, 0);
@@ -80,7 +77,6 @@ mc.on("rotate", function (event) {
     camera.rotate(phi, event.center.x, event.center.y);
     draw();
     prevRotate = event.rotation;
-	compass.updateRotation(Math.PI-camera.theta);
 });
 
 let prevPinchScale;
