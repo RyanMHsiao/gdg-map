@@ -1,5 +1,4 @@
-// Written by Ryan Hsiao
-// Most don't need to understand details, just how to use it
+// Written by Ryan Hsiao // Most don't need to understand details, just how to use it
 // Ask for help if any documentation is unclear
 
 // Clases here follow this interface:
@@ -20,10 +19,6 @@ export class Equirectangular {
 	// Angle of equator in clockwise radians from +x direction
 	// Everything is clockwise because that's how canvas works
 	equatorTheta;
-	// Change of basis matrix from lat, lon to x, y
-	// ( a  c ) ( lon ) = ( x )
-	// ( b  d ) ( lat )   ( y )
-	changeBasisF;
 
 	// To save myself from some tricky math, this requires 3 reference points
 	// They must be arranged in an L shape with points A, B, and C
@@ -66,25 +61,22 @@ export class Equirectangular {
 		console.log("lon distance:", distance);
 		this.lonScale = distance / (eastPoint.longitude - westPoint.longitude);
 		// Extrapolate from our 3 points
-		this.originX = data.b.x - data.b.longitude * this.lonScale;
+		this.sine = Math.sin(this.equatorTheta);
+		this.cosine = Math.cos(this.equatorTheta);
+		this.originX = data.b.x - this.cosine * data.b.longitude * this.lonScale - this.sine * data.b.latitude * this.latScale;
 		// We add here for clockwise reasons
-		this.originY = data.b.y + data.b.latitude * this.latScale;
-		// Linear algebra stuff
-		this.changeBasisF = [
-			Math.cos(this.equatorTheta) * this.lonScale,
-			Math.cos(this.equatorTheta) * this.latScale,
-			Math.sin(this.equatorTheta) * this.lonScale,
-			Math.sin(this.equatorTheta) * this.latScale
-		];
+		this.originY = data.b.y - this.cosine * data.b.latitude * this.latScale - this.sine * data.b.longitude * this.lonScale;
 	}
 
 	// Forward transformation
 	f(latitude, longitude) {
-		// TODO Implement this. Currently doesn't work
-		return [
-			this.originX + (this.changeBasisF[0] * longitude + this.changeBasisF[2] * latitude),
-			this.originY + (this.changeBasisF[1] * longitude + this.changeBasisF[3] * latitude),
+		let deltaX = longitude * this.lonScale;
+		let deltaY = latitude * this.latScale;
+		[deltaX, deltaY] = [
+			deltaX * Math.cos(this.equatorTheta) + deltaY * Math.sin(this.equatorTheta),
+			deltaX * Math.sin(this.equatorTheta) + deltaY * Math.cos(this.equatorTheta)
 		];
+		return [this.originX + deltaX, this.originY + deltaY];
 	}
 
 	// Reverse transformation
