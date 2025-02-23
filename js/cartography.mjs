@@ -73,14 +73,21 @@ export class Equirectangular {
 		let deltaX = longitude * this.lonScale;
 		let deltaY = latitude * this.latScale;
 		[deltaX, deltaY] = [
-			deltaX * Math.cos(this.equatorTheta) + deltaY * Math.sin(this.equatorTheta),
-			deltaX * Math.sin(this.equatorTheta) + deltaY * Math.cos(this.equatorTheta)
+			deltaX * this.cosine + deltaY * this.sine,
+			deltaX * this.sine + deltaY * this.cosine
 		];
 		return [this.originX + deltaX, this.originY + deltaY];
 	}
 
 	// Reverse transformation
 	r(x, y) {
-		// TODO Implement this
+		let deltaX = -x + this.originX;
+		let deltaY = -y + this.originY;
+		// Rotate in reverse
+		[deltaX, deltaY] = [
+			deltaX * this.cosine + deltaY * -this.sine,
+			deltaX * -this.sine + deltaY * this.cosine
+		];
+		return [deltaY / this.latScale, deltaX / this.lonScale];
 	}
 }
