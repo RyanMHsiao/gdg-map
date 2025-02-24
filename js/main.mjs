@@ -2,12 +2,24 @@
 // We may want to move some of the logic to a separate file later on
 
 import { Camera } from "./camera.mjs";
+import { Equirectangular } from "./cartography.mjs";
+
+// Converter object between pixel coordinates and latitude, longitude
+// Not very precise, tuned to the edge of the basketball court
+const equirect = new Equirectangular({
+	a: {x: 1527, y: 2050, latitude: 37.362473, longitude: -120.424833},
+	b: {x: 1585, y: 2050, latitude: 37.362130, longitude: -120.424833},
+	c: {x: 1585, y: 1964, latitude: 37.362130, longitude: -120.424193},
+});
+window.equirect = equirect;
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
 
 function draw() {
 	ctx.drawImage($("#background-map")[0], 0, 0);
+	// Feel free to experiment by adding some canvas draw calls here
+	// You can test out the equirect object to make some conversions
 }
 
 function resize() {
