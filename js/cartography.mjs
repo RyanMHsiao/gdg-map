@@ -1,4 +1,4 @@
-// Written by Ryan Hsiao // Most don't need to understand details, just how to use it
+// Written by Ryan Hsiao, most don't need to understand details, just how to use it
 // Ask for help if any documentation is unclear
 
 // Clases here follow this interface:
@@ -52,13 +52,11 @@ export class Equirectangular {
 		let deltaX = data.a.x - data.b.x;
 		let deltaY = data.a.y - data.b.y;
 		let distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
-		console.log("lat distance:", distance);
 		this.latScale = distance / (northPoint.latitude - southPoint.latitude);
 		// Calculating lonScale
 		deltaX = data.b.x - data.c.x;
 		deltaY = data.b.y - data.c.y;
 		distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
-		console.log("lon distance:", distance);
 		this.lonScale = distance / (eastPoint.longitude - westPoint.longitude);
 		// Extrapolate from our 3 points
 		this.sine = Math.sin(this.equatorTheta);
