@@ -2,7 +2,19 @@
 // We may want to move some of the logic to a separate file later on
 
 import { Camera } from "./camera.mjs";
-import { Equirectangular } from "./cartography.mjs";
+import { Equirectangular, SphereMercator } from "./cartography.mjs";
+
+const mercator = new SphereMercator({
+	b: {x: 1120, y: 944, latitude: 15, longitude: 15},
+	c: {x: 1206, y: 944, latitude: 15, longitude: 30}
+});
+window.mercator = mercator;
+
+$(window).on("mousemove", function (event) {
+	let [x, y] = [event.offsetX, event.offsetY];
+	let [lat, lon] = mercator.r(x, y);
+	console.log([lat, lon], [x, y], mercator.f(lat, lon));
+});
 
 // Converter object between pixel coordinates and latitude, longitude
 // Not very precise, tuned to the edge of the basketball court

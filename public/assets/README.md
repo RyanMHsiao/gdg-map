@@ -1,0 +1,3 @@
+# assets
+
+Mercator projection map from [[https://commons.wikimedia.org/wiki/File:Web_maps_Mercator_projection_SW.jpg]]
