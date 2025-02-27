@@ -10,6 +10,12 @@ const mercator = new SphereMercator({
 });
 window.mercator = mercator;
 
+const mercator2 = new SphereMercator({
+	b: {x: 93, y: 367, latitude: 75, longitude: -165},
+	c: {x: 435, y: 367, latitude: 75, longitude: -105}
+});
+window.mercator2 = mercator2;
+
 $(window).on("mousemove", function (event) {
 	let [x, y] = [event.offsetX, event.offsetY];
 	let [lat, lon] = mercator.r(x, y);

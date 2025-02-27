@@ -119,6 +119,7 @@ export class SphereMercator {
 		// This is kind of spaghetti code, can be heavily refactored
 		// 180 / Math.PI factor is to convert from degree-based lonScale
 		let altitude = 180 / Math.PI * this.lonScale * Math.log(Math.tan(Math.PI/4 + Math.PI*data.b.latitude/360));
+		console.log("altitude:", altitude, "latitude:", data.b.latitude)
 		// Assumes Northern hemisphere
 		this.originY = data.b.y + altitude;
 		this.originX = data.b.x - data.b.longitude * this.lonScale;
@@ -132,7 +133,8 @@ export class SphereMercator {
 	r(x, y) {
 		let longitude = (x - this.originX) / this.lonScale;
 		// Latitude calculation broken right now TODO unbreak it
-		let latitude = 2 * Math.atan(Math.exp((this.originY - y) * Math.PI / 180 / this.lonScale)) - Math.PI/2;
+		let deltaY = this.originY - y;
+		let latitude = (Math.atan(Math.exp(deltaY / 180 * Math.PI / this.lonScale)) - Math.PI/4) / Math.PI*360;
 		return [latitude, longitude];
 	}
 }
