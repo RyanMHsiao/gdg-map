@@ -3,7 +3,6 @@
 import { Camera } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 
-/*
 const mercator = new SphereMercator({
 	b: {x: 1120, y: 944, latitude: 15, longitude: 15},
 	c: {x: 1206, y: 944, latitude: 15, longitude: 30}
@@ -15,15 +14,17 @@ const mercator2 = new SphereMercator({
 	c: {x: 435, y: 367, latitude: 75, longitude: -105}
 });
 window.mercator2 = mercator2;
-*/
 
-/*
-$(window).on("mousemove", function (event) {
+$(window).on("click", function (event) {
 	let [x, y] = [event.offsetX, event.offsetY];
-	// let [lat, lon] = mercator.r(x, y);
-	console.log([x, y], camera.screenToWorld(x, y));
+	let [screenX, screenY] = camera.screenToWorld(x, y);
+	let [lat, lon] = mercator.r(screenX, screenY);
+	let [reverseX, reverseY] = mercator.f(lat, lon);
+	console.log("x, y:", x, y);
+	console.log("screenX, screenY:", screenX, screenY);
+	console.log("lat, lon:", lat, lon);
+	console.log("reverseX, reverseY:", reverseX, reverseY);
 });
-*/
 
 // Converter object between pixel coordinates and latitude, longitude
 // Not very precise, tuned to the edge of the basketball court
