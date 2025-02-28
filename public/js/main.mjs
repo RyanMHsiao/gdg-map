@@ -1,5 +1,4 @@
-// Contains all top-level code for now
-// We may want to move some of the logic to a separate file later on
+// Contains all top-level code for now // We may want to move some of the logic to a separate file later on
 
 import { Camera } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
@@ -18,11 +17,13 @@ const mercator2 = new SphereMercator({
 window.mercator2 = mercator2;
 */
 
+/*
 $(window).on("mousemove", function (event) {
 	let [x, y] = [event.offsetX, event.offsetY];
 	// let [lat, lon] = mercator.r(x, y);
 	console.log([x, y], camera.screenToWorld(x, y));
 });
+*/
 
 // Converter object between pixel coordinates and latitude, longitude
 // Not very precise, tuned to the edge of the basketball court

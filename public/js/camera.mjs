@@ -82,7 +82,6 @@ export class Camera {
 		}
 	}
 
-	// TODO Add logic for rotations
 	// Helper function to convert coordinates like offsetX, offsetY
 	// to x and y values on the canvas accounting for transformations
 	screenToWorld(x, y) {
@@ -90,10 +89,20 @@ export class Camera {
 		y -= this.transform[5];
 		x /= this.scaleFactor;
 		y /= this.scaleFactor;
-		console.log(x, y, Math.cos(this.theta), Math.sin(this.theta));
 		return [
 			x * Math.cos(this.theta) + y * Math.sin(this.theta),
 			y * Math.cos(this.theta) - x * Math.sin(this.theta)
 		];
+	}
+
+	// Inverse of screenToWorld
+	worldToScreen(x, y) {
+		// Using linear algebra to apply affine transformation
+		let result = [this.transform[4], this.transform[5]];
+		for (let i = 0; i < 2; ++i) {
+			result[i] += x * this.transform[i];
+			result[i] += y * this.transform[2 + i];
+		}
+		return result;
 	}
 }
