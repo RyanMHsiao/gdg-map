@@ -90,6 +90,10 @@ export class Camera {
 		y -= this.transform[5];
 		x /= this.scaleFactor;
 		y /= this.scaleFactor;
-		return [x, y];
+		console.log(x, y, Math.cos(this.theta), Math.sin(this.theta));
+		return [
+			x * Math.cos(this.theta) + y * Math.sin(this.theta),
+			y * Math.cos(this.theta) - x * Math.sin(this.theta)
+		];
 	}
 }

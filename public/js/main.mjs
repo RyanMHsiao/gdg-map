@@ -4,6 +4,7 @@
 import { Camera } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 
+/*
 const mercator = new SphereMercator({
 	b: {x: 1120, y: 944, latitude: 15, longitude: 15},
 	c: {x: 1206, y: 944, latitude: 15, longitude: 30}
@@ -15,11 +16,12 @@ const mercator2 = new SphereMercator({
 	c: {x: 435, y: 367, latitude: 75, longitude: -105}
 });
 window.mercator2 = mercator2;
+*/
 
 $(window).on("mousemove", function (event) {
 	let [x, y] = [event.offsetX, event.offsetY];
-	let [lat, lon] = mercator.r(x, y);
-	console.log([lat, lon], [x, y], mercator.f(lat, lon));
+	// let [lat, lon] = mercator.r(x, y);
+	console.log([x, y], camera.screenToWorld(x, y));
 });
 
 // Converter object between pixel coordinates and latitude, longitude
