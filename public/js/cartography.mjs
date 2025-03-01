@@ -62,7 +62,6 @@ export class Equirectangular {
 		this.sine = Math.sin(this.equatorTheta);
 		this.cosine = Math.cos(this.equatorTheta);
 		this.originX = data.b.x - this.cosine * data.b.longitude * this.lonScale - this.sine * data.b.latitude * this.latScale;
-		// We add here for clockwise reasons
 		this.originY = data.b.y - this.cosine * data.b.latitude * this.latScale - this.sine * data.b.longitude * this.lonScale;
 	}
 
@@ -87,5 +86,54 @@ export class Equirectangular {
 			deltaX * -this.sine + deltaY * this.cosine
 		];
 		return [deltaY / this.latScale, deltaX / this.lonScale];
+	}
+}
+
+export class SphereMercator {
+	// What the x and y for Null Island would be
+	originX;
+	originY;
+	// Scale of longitude in pixels per degree
+	// Note the lack of a single scale for latitude
+	lonScale;
+	// Not currently supporting equatorTheta not equal to 0
+	// That makes the math harder and the theta should always be 0
+
+	// Requires two reference points of the same latitude
+	// Named .b and .c for consistency with Equirectangular
+	// Each point needs .x, .y, .longitude, .latitude
+	// B-C, can also be C-B
+	constructor(data) {
+		if (data.b.latitude != data.c.latitude) {
+			console.log(`.b and .c from data do not have same latitude in ${data}`);
+		}
+		let westPoint = data.b;
+		let eastPoint = data.c;
+		if (data.b.longitude > data.c.longitude) {
+			[westPoint, eastPoint] = [eastPoint, westPoint];
+		}
+		// Not accounting for crossing the antimeridian
+		let deltaX = eastPoint.x - westPoint.x;
+		this.lonScale = deltaX / (eastPoint.longitude - westPoint.longitude);
+		// altitude as in distance perpendicular to equator
+		// This is kind of spaghetti code, can be heavily refactored
+		// 180 / Math.PI factor is to convert from degree-based lonScale
+		let altitude = 180 / Math.PI * this.lonScale * Math.log(Math.tan(Math.PI/4 + Math.PI*data.b.latitude/360));
+		// Assumes Northern hemisphere
+		this.originY = data.b.y + altitude;
+		this.originX = data.b.x - data.b.longitude * this.lonScale;
+	}
+
+	f(latitude, longitude) {
+		let deltaY = 180 / Math.PI * this.lonScale * Math.log(Math.tan(Math.PI/4 + Math.PI * latitude/360));
+		return [this.originX + longitude * this.lonScale, this.originY - deltaY];
+	}
+
+	r(x, y) {
+		let longitude = (x - this.originX) / this.lonScale;
+		// Latitude calculation broken right now TODO unbreak it
+		let deltaY = this.originY - y;
+		let latitude = (Math.atan(Math.exp(deltaY / 180 * Math.PI / this.lonScale)) - Math.PI/4) / Math.PI*360;
+		return [latitude, longitude];
 	}
 }

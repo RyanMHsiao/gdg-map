@@ -2,16 +2,33 @@
 // We may want to move some of the logic to a separate file later on
 
 import { Camera } from "./camera.mjs";
-import { Equirectangular } from "./cartography.mjs";
+import { Equirectangular, SphereMercator } from "./cartography.mjs";
 
-// Converter object between pixel coordinates and latitude, longitude
-// Not very precise, tuned to the edge of the basketball court
+const mercator = new SphereMercator({
+	b: {x: 2281, y: 1648, latitude: 37.3583333333, longitude: -120.441666667},
+	c: {x: 4708, y: 1648, latitude: 37.3583333333, longitude: -120.408333333}
+});
+window.mercator = mercator;
+
+$(window).on("click", function (event) {
+	let [x, y] = [event.offsetX, event.offsetY];
+	let [worldX, worldY] = camera.screenToWorld(x, y);
+	let [lat, lon] = mercator.r(worldX, worldY);
+	let [reverseX, reverseY] = mercator.f(lat, lon);
+	// console.log("x, y:", x, y);
+	// console.log("worldX, worldY:", worldX, worldY);
+	console.log("lat, lon:", lat, lon);
+	// console.log("reverseX, reverseY:", reverseX, reverseY);
+});
+
+/*
 const equirect = new Equirectangular({
-	a: {x: 1527, y: 2050, latitude: 37.362473, longitude: -120.424833},
-	b: {x: 1585, y: 2050, latitude: 37.362130, longitude: -120.424833},
-	c: {x: 1585, y: 1964, latitude: 37.362130, longitude: -120.424193},
+	a: {x: 2281, y: 121, latitude: 37.375, longitude: -120.441666667},
+	b: {x: 2281, y: 1648, latitude: 37.3583333333, longitude: -120.441666667},
+	c: {x: 4708, y: 1648, latitude: 37.3583333333, longitude: -120.408333333}
 });
 window.equirect = equirect;
+*/
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
@@ -19,7 +36,7 @@ const camera = new Camera(ctx);
 function draw() {
 	ctx.drawImage($("#background-map")[0], 0, 0);
 	// Feel free to experiment by adding some canvas draw calls here
-	// You can test out the equirect object to make some conversions
+	// You can test out the mercator or equirect object to make some conversions
 }
 
 function resize() {

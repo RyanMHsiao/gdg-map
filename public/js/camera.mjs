@@ -26,7 +26,7 @@ export class Camera {
 
 	constructor(ctx) {
 		this.ctx = ctx;
-		this.compass = new Compass(Math.PI, this);
+		this.compass = new Compass(Math.PI / 2, this);
 	}
 
 	// x and y are change in pointer position in pixels
@@ -78,11 +78,10 @@ export class Camera {
 		// Once again translate does our setTransform call for us
 		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
 		if (!skipCompass) {
-			this.compass.updateRotation(Math.PI - this.theta);
+			this.compass.updateRotation(Math.PI/2 - this.theta);
 		}
 	}
 
-	// TODO Add logic for rotations
 	// Helper function to convert coordinates like offsetX, offsetY
 	// to x and y values on the canvas accounting for transformations
 	screenToWorld(x, y) {
@@ -90,6 +89,20 @@ export class Camera {
 		y -= this.transform[5];
 		x /= this.scaleFactor;
 		y /= this.scaleFactor;
-		return [x, y];
+		return [
+			x * Math.cos(this.theta) + y * Math.sin(this.theta),
+			y * Math.cos(this.theta) - x * Math.sin(this.theta)
+		];
+	}
+
+	// Inverse of screenToWorld
+	worldToScreen(x, y) {
+		// Using linear algebra to apply affine transformation
+		let result = [this.transform[4], this.transform[5]];
+		for (let i = 0; i < 2; ++i) {
+			result[i] += x * this.transform[i];
+			result[i] += y * this.transform[2 + i];
+		}
+		return result;
 	}
 }
