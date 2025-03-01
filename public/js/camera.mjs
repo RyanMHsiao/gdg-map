@@ -26,7 +26,7 @@ export class Camera {
 
 	constructor(ctx) {
 		this.ctx = ctx;
-		this.compass = new Compass(Math.PI, this);
+		this.compass = new Compass(Math.PI / 2, this);
 	}
 
 	// x and y are change in pointer position in pixels
@@ -78,7 +78,7 @@ export class Camera {
 		// Once again translate does our setTransform call for us
 		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
 		if (!skipCompass) {
-			this.compass.updateRotation(Math.PI - this.theta);
+			this.compass.updateRotation(Math.PI/2 - this.theta);
 		}
 	}
 
