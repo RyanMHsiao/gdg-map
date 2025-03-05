@@ -138,12 +138,15 @@ function focusOn(feature) {
 		return;
 	}
 	camera.setCenterOn(tempFeatures[feature].x, tempFeatures[feature].y);
+	draw();
 }
-$("#searchbar").on("keyup", function (event) {
+$("#searchbar-data").on("keyup", function (event) {
 	if (event.key == "Enter" || event.keyCode == 13) {
 		focusOn(this.value);
-		draw();
 	}
+});
+$("#searchbar-submit").on("click", function (event) {
+	focusOn($("#searchbar-data")[0].value);
 });
 
 resize();
