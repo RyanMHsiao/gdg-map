@@ -28,3 +28,11 @@ html {
 	left: max(5vh, 5vw);
 	font-size: 20pt;
 }
+
+/* Things like centering and size can be added later */
+#searchbar {
+	position: absolute;
+	z-index: 150;
+	top: 0.5em;
+	margin: auto;
+}
