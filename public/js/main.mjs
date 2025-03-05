@@ -123,6 +123,32 @@ mc.on("pinchend", function (event) {
 	//console.log("panend");
 });
 
+// Listener for searchbar
+let tempFeatures = {
+	"pointa": { x: 3635, y: 919 },
+	"pointb": { x: 3365, y: 1288 }
+}
+function focusOn(feature) {
+	if (tempFeatures[feature] == undefined) {
+		alert(`The feature ${feature} doesn't exist`);
+		return;
+	}
+	if (isNaN(tempFeatures[feature].x + tempFeatures[feature].y)) {
+		console.log(`Got NaN when looking for tempFeatures[${feature}] ${tempFeatures[feature]}`);
+		return;
+	}
+	camera.setCenterOn(tempFeatures[feature].x, tempFeatures[feature].y);
+	draw();
+}
+$("#searchbar-data").on("keyup", function (event) {
+	if (event.key == "Enter" || event.keyCode == 13) {
+		focusOn(this.value);
+	}
+});
+$("#searchbar-submit").on("click", function (event) {
+	focusOn($("#searchbar-data")[0].value);
+});
+
 resize();
 draw();
 

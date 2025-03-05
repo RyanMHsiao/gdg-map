@@ -105,4 +105,11 @@ export class Camera {
 		}
 		return result;
 	}
+
+	// Translates to shift the center of the screen to a given world value
+	// We can add more functionality later like smooth transition and zooming
+	setCenterOn(x, y) {
+		[x, y] = this.worldToScreen(x, y);
+		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
+	}
 }
