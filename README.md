@@ -10,6 +10,7 @@ A lot about this project is undecided, even the name.
 For discussion, go to the Discord.
 
 **atelier** is where you can learn a bit on how to make SVGs.
+
 **public** is where all the files that are part of the website live.
 
 ## Team members
