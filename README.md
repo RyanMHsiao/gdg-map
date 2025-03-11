@@ -15,5 +15,8 @@ For discussion, go to the Discord.
 
 ## Team members
 
+Matthew Tou
+
 Ryan Hsiao
+
 Thomas Morford
