@@ -18,10 +18,14 @@ const mercator = new SphereMercator({
 window.mercator = mercator;
 
 function draw() {
+	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);
 	// Feel free to experiment by adding some canvas draw calls here
-	// You can test out the mercator or equirect object to make some conversions
+	ctx.fillStyle = "crimson";
+	// Here, I use the mercator object to convert my latitude and longitude
+	// into a format that ctx can understand
+	ctx.fillRect(...mercator.f(37.358, -120.44), 500, 500);
 }
 
 function resize() {

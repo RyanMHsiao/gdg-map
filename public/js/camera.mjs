@@ -33,7 +33,6 @@ class Camera {
 	translate(x, y) {
 		this.transform[4] += x;
 		this.transform[5] += y;
-		this.ctx.setTransform(...this.transform);
 	}
 
 	// relativeScale is how much to scale relative to previous scale
@@ -50,7 +49,6 @@ class Camera {
 		// At this point, we have kept the top left of the screen a fixed point
 		// We just translate a little more to keep the pointer position fixed
 		let centerFactor = 1 - relativeScale;
-		// The this.translate call also sets transform for us
 		this.translate(x * centerFactor, y * centerFactor);
 		this.ctx.setTransform(...this.transform);
 		this.scaleFactor = newScale;
@@ -75,7 +73,6 @@ class Camera {
 		// delta is the same for rho and theta
 		// since both start from the same point (the origin)
 		// We can use this fact to calculate how much we need to translate
-		// Once again translate does our setTransform call for us
 		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
 		if (!skipCompass) {
 			this.compass.updateRotation(Math.PI/2 - this.theta);
@@ -111,6 +108,11 @@ class Camera {
 	setCenterOn(x, y) {
 		[x, y] = this.worldToScreen(x, y);
 		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
+	}
+
+	// Sets the transformation to what the basemap expects
+	refreshTransform() {
+		this.ctx.setTransform(...this.transform);
 	}
 }
 
