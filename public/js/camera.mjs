@@ -114,7 +114,7 @@ class Camera {
 	}
 }
 
-function addTransformListeners() {
+function addTransformListeners(camera) {
 	// Adding a scroll wheel based zoom
 	// Not supported on all browsers, add buttons as alternative
 	$("#canvas").on("wheel", function (event) {

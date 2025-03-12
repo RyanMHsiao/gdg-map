@@ -8,7 +8,7 @@ import { addSearchbarListeners } from "./searchbar.mjs";
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
 
-addTransformListeners();
+addTransformListeners(camera);
 addSearchbarListeners(camera);
 
 const mercator = new SphereMercator({
