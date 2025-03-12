@@ -15,10 +15,12 @@ For discussion, go to the Discord.
 
 ## Team members
 
+Dylan Ward
+
+Liuz Pokharel
+
 Matthew Tou
 
 Ryan Hsiao
 
 Thomas Morford
-
-Dylan Ward
