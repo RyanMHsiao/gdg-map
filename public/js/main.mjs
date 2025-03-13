@@ -34,6 +34,8 @@ function draw() {
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
+	ctx.fillStyle = "blue";
+	ctx.fillRect(100, 100, 100, 100);
 }
 
 function resize() {

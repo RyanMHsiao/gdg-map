@@ -117,15 +117,30 @@ class Camera {
 		this.ctx.setTransform(...this.transform);
 	}
 
-	staple(x1, y1, x2, y2, x3, y3, x4, y4) {
-		[x1, y1] = this.worldToScreen(x1, y1);
-		[x2, y2] = this.worldToScreen(x2, y2);
+	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4) {
+		let initTransform = this.transform;
+		let initScaleFactor = this.scaleFactor;
+		let initTheta = this.theta;
+
+		let [x1, y1] = this.worldToScreen(worldX1, worldY1);
+		let [x2, y2] = this.worldToScreen(worldX2, worldY2);
 		this.ctx.resetTransform();
-		this.ctx.resetTransform();
-		this.ctx.fillStyle = "blue";
-		this.ctx.translate(x1 - x3, y1 - y3);
-		this.ctx.fillRect(x3, y3, 100, 100);
+		this.transform = [1, 0, 0, 1, 0, 0];
+		this.scaleFactor = 1;
+		this.theta = 0;
+		this.translate(x1 - x3, y1 - y3);
+		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1);
+
+		this.transform = initTransform;
+		this.scaleFactor = initScaleFactor;
+		this.theta = initTheta;
 	}
+}
+
+function distance(x1, y1, x2, y2) {
+	let dx = x1 - x2;
+	let dy = y1 - y2;
+	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function addTransformListeners(camera) {
