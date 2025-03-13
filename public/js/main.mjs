@@ -8,7 +8,7 @@ import { addSearchbarListeners } from "./searchbar.mjs";
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
 
-addTransformListeners();
+addTransformListeners(camera);
 addSearchbarListeners(camera);
 
 const mercator = new SphereMercator({
@@ -18,10 +18,24 @@ const mercator = new SphereMercator({
 window.mercator = mercator;
 
 function draw() {
+	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);
 	// Feel free to experiment by adding some canvas draw calls here
-	// You can test out the mercator or equirect object to make some conversions
+	ctx.fillStyle = "crimson";
+	// Here, I use the mercator object to convert my latitude and longitude
+	// into a format that ctx can understand
+	let [x1, y1] = mercator.f(37.358, -120.44);
+	let [x2, y2] = mercator.f(37.357, -120.45);
+	ctx.beginPath();
+	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
+	ctx.fill();
+	ctx.beginPath();
+	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
+	ctx.fill();
+	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
+	ctx.fillStyle = "blue";
+	ctx.fillRect(100, 100, 100, 100);
 }
 
 function resize() {

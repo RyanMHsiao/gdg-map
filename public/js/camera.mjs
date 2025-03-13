@@ -24,16 +24,17 @@ class Camera {
 	// Compass is here so that we can link it to the canvas transformations
 	compass;
 
-	constructor(ctx) {
+	constructor(ctx, skipCompass) {
 		this.ctx = ctx;
-		this.compass = new Compass(Math.PI / 2, this);
+		if (!skipCompass) {
+			this.compass = new Compass(Math.PI / 2, this);
+		}
 	}
 
 	// x and y are change in pointer position in pixels
 	translate(x, y) {
 		this.transform[4] += x;
 		this.transform[5] += y;
-		this.ctx.setTransform(...this.transform);
 	}
 
 	// relativeScale is how much to scale relative to previous scale
@@ -50,7 +51,6 @@ class Camera {
 		// At this point, we have kept the top left of the screen a fixed point
 		// We just translate a little more to keep the pointer position fixed
 		let centerFactor = 1 - relativeScale;
-		// The this.translate call also sets transform for us
 		this.translate(x * centerFactor, y * centerFactor);
 		this.ctx.setTransform(...this.transform);
 		this.scaleFactor = newScale;
@@ -75,7 +75,6 @@ class Camera {
 		// delta is the same for rho and theta
 		// since both start from the same point (the origin)
 		// We can use this fact to calculate how much we need to translate
-		// Once again translate does our setTransform call for us
 		this.translate(relX - Math.cos(phiPrime) * rho, relY - Math.sin(phiPrime) * rho);
 		if (!skipCompass) {
 			this.compass.updateRotation(Math.PI/2 - this.theta);
@@ -112,9 +111,48 @@ class Camera {
 		[x, y] = this.worldToScreen(x, y);
 		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
 	}
+
+	// Sets the transformation to what the basemap expects
+	refreshTransform() {
+		this.ctx.setTransform(...this.transform);
+	}
+
+	// Sets the transform two make two points on the world
+	// match up with two new points
+	// Imagine a staple fixing a new paper above the map
+	// using two points of contact, except the staple
+	// is capable of stretching
+	// The first four arguments are corners on the map
+	// and the last four arguments are corners on the new plane
+	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4) {
+		let initTransform = this.transform;
+		let initScaleFactor = this.scaleFactor;
+		let initTheta = this.theta;
+
+		let [x1, y1] = this.worldToScreen(worldX1, worldY1);
+		let [x2, y2] = this.worldToScreen(worldX2, worldY2);
+		this.ctx.resetTransform();
+		this.transform = [1, 0, 0, 1, 0, 0];
+		this.scaleFactor = 1;
+		this.theta = 0;
+		this.translate(x1 - x3, y1 - y3);
+		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1);
+		this.rotate(-Math.atan2(x2 - x1, y2 - y1) + Math.atan2(x4 - x3, y4 - y3), x1, y1, true);
+		this.refreshTransform();
+
+		this.transform = initTransform;
+		this.scaleFactor = initScaleFactor;
+		this.theta = initTheta;
+	}
 }
 
-function addTransformListeners() {
+function distance(x1, y1, x2, y2) {
+	let dx = x1 - x2;
+	let dy = y1 - y2;
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
+function addTransformListeners(camera) {
 	// Adding a scroll wheel based zoom
 	// Not supported on all browsers, add buttons as alternative
 	$("#canvas").on("wheel", function (event) {
