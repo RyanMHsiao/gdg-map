@@ -1,7 +1,7 @@
 // Contains all top-level code for now
 // We may want to move some of the logic to a separate file later on
 
-import { Camera, addTransformListeners } from "./camera.mjs";
+import { Camera, addTransformListeners, staple } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 
@@ -25,7 +25,19 @@ function draw() {
 	ctx.fillStyle = "crimson";
 	// Here, I use the mercator object to convert my latitude and longitude
 	// into a format that ctx can understand
-	ctx.fillRect(...mercator.f(37.358, -120.44), 500, 500);
+	let [x1, y1] = mercator.f(37.358, -120.44);
+	let [x2, y2] = mercator.f(37.357, -120.45);
+	ctx.beginPath();
+	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
+	ctx.fill();
+	ctx.beginPath();
+	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
+	ctx.fill();
+	// staple(camera, x1, y1, x2, y2, 100, 100, 200, 200);
+	let [screenX, screenY] = camera.worldToScreen(x1, y1);
+	ctx.resetTransform();
+	ctx.fillStyle = "blue";
+	ctx.fillRect(screenX, screenY, 100, 100);
 }
 
 function resize() {

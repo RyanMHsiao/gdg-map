@@ -24,9 +24,11 @@ class Camera {
 	// Compass is here so that we can link it to the canvas transformations
 	compass;
 
-	constructor(ctx) {
+	constructor(ctx, skipCompass) {
 		this.ctx = ctx;
-		this.compass = new Compass(Math.PI / 2, this);
+		if (!skipCompass) {
+			this.compass = new Compass(Math.PI / 2, this);
+		}
 	}
 
 	// x and y are change in pointer position in pixels
@@ -190,4 +192,13 @@ function addTransformListeners(camera) {
 	});
 }
 
-export { Camera, addTransformListeners };
+function staple(camera, x1, y1, x2, y2, x3, y3, x4, y4) {
+	// WIP
+	// Doesn't work the same as the version in main for some reason
+	let screenX, screenY = camera.worldToScreen(x1, y1);
+	camera.ctx.resetTransform();
+	console.log(screenX, screenY);
+	camera.ctx.translate(screenX - x3, screenY - y3);
+}
+
+export { Camera, addTransformListeners, staple };
