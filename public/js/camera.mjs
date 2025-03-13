@@ -117,6 +117,13 @@ class Camera {
 		this.ctx.setTransform(...this.transform);
 	}
 
+	// Sets the transform two make two points on the world
+	// match up with two new points
+	// Imagine a staple fixing a new paper above the map
+	// using two points of contact, except the staple
+	// is capable of stretching
+	// The first four arguments are corners on the map
+	// and the last four arguments are corners on the new plane
 	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4) {
 		let initTransform = this.transform;
 		let initScaleFactor = this.scaleFactor;
