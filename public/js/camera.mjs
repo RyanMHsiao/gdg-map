@@ -116,6 +116,16 @@ class Camera {
 	refreshTransform() {
 		this.ctx.setTransform(...this.transform);
 	}
+
+	staple(x1, y1, x2, y2, x3, y3, x4, y4) {
+		[x1, y1] = this.worldToScreen(x1, y1);
+		[x2, y2] = this.worldToScreen(x2, y2);
+		this.ctx.resetTransform();
+		this.ctx.resetTransform();
+		this.ctx.fillStyle = "blue";
+		this.ctx.translate(x1 - x3, y1 - y3);
+		this.ctx.fillRect(x3, y3, 100, 100);
+	}
 }
 
 function addTransformListeners(camera) {
@@ -192,13 +202,4 @@ function addTransformListeners(camera) {
 	});
 }
 
-function staple(camera, x1, y1, x2, y2, x3, y3, x4, y4) {
-	// WIP
-	// Doesn't work the same as the version in main for some reason
-	let screenX, screenY = camera.worldToScreen(x1, y1);
-	camera.ctx.resetTransform();
-	console.log(screenX, screenY);
-	camera.ctx.translate(screenX - x3, screenY - y3);
-}
-
-export { Camera, addTransformListeners, staple };
+export { Camera, addTransformListeners };

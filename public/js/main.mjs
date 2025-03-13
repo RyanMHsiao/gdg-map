@@ -1,7 +1,7 @@
 // Contains all top-level code for now
 // We may want to move some of the logic to a separate file later on
 
-import { Camera, addTransformListeners, staple } from "./camera.mjs";
+import { Camera, addTransformListeners } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 
@@ -33,11 +33,7 @@ function draw() {
 	ctx.beginPath();
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
-	// staple(camera, x1, y1, x2, y2, 100, 100, 200, 200);
-	let [screenX, screenY] = camera.worldToScreen(x1, y1);
-	ctx.resetTransform();
-	ctx.fillStyle = "blue";
-	ctx.fillRect(screenX, screenY, 100, 100);
+	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 }
 
 function resize() {
