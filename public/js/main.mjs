@@ -29,13 +29,17 @@ function draw() {
 	let [x2, y2] = mercator.f(37.357, -120.45);
 	ctx.beginPath();
 	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
-	ctx.fill();
-	ctx.beginPath();
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 	ctx.fillStyle = "blue";
 	ctx.fillRect(100, 100, 100, 100);
+	ctx.resetTransform();
+	ctx.strokeStyle = "black";
+	ctx.fillStyle = "white";
+	ctx.textAlign = "center";
+	ctx.strokeText("Test text", ...camera.worldToScreen(x1, y1));
+	ctx.fillText("Test text", ...camera.worldToScreen(x1, y1));
 }
 
 function resize() {
