@@ -39,10 +39,9 @@ class Camera {
 
 	// relativeScale is how much to scale relative to previous scale
 	// x and y are the center of the scale in pixels
-	scale(relativeScale, x, y) {
+	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4) {
 		let newScale = this.scaleFactor * relativeScale;
-		// TODO Make scale limits configurable
-		newScale = Math.min(Math.max(0.125, newScale), 4);
+		newScale = Math.min(Math.max(minScale, newScale), maxScale);
 		// Change value if newScale got clamped
 		relativeScale = newScale / this.scaleFactor;
 		for (let i = 0; i < 6; ++i) {
@@ -136,7 +135,7 @@ class Camera {
 		this.scaleFactor = 1;
 		this.theta = 0;
 		this.translate(x1 - x3, y1 - y3);
-		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1);
+		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1, 0, Infinity);
 		this.rotate(-Math.atan2(x2 - x1, y2 - y1) + Math.atan2(x4 - x3, y4 - y3), x1, y1, true);
 		this.refreshTransform();
 

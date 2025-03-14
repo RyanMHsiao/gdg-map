@@ -63,6 +63,6 @@ $(window).on("click", function (event) {
 		let [x, y] = [event.offsetX, event.offsetY];
 		let [worldX, worldY] = camera.screenToWorld(x, y);
 		let [lat, lon] = mercator.r(worldX, worldY);
-		console.log("lat, lon:", lat, lon);
+		console.log("lat, lon:", lat, lon, "worldX, worldY:", worldX, worldY, "screenX, screenY:", x, y);
 	}
 });
