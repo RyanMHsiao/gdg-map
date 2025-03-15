@@ -1,7 +1,7 @@
 // Contains all top-level code for now
 // We may want to move some of the logic to a separate file later on
 
-import { Camera, addCameraListeners } from "./camera.mjs";
+import { Camera, addCameraListeners, mergeLeft } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 
@@ -17,26 +17,33 @@ const mercator = new SphereMercator({
 });
 window.mercator = mercator;
 
+const ellipseStyle = { fillStyle: "crimson" };
+const rectangleStyle = { fillStyle: "blue" };
+const testTextStyle = {
+	fillStyle: "white",
+	strokeStyle: "black",
+	lineWidth: 4,
+	font: "20px",
+	textAlign: "center"
+};
 function draw() {
 	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);
 	// Feel free to experiment by adding some canvas draw calls here
-	ctx.fillStyle = "crimson";
 	// Here, I use the mercator object to convert my latitude and longitude
 	// into a format that ctx can understand
 	let [x1, y1] = mercator.f(37.358, -120.44);
 	let [x2, y2] = mercator.f(37.357, -120.45);
+	mergeLeft(ctx, ellipseStyle);
 	ctx.beginPath();
 	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
-	ctx.fillStyle = "blue";
+	mergeLeft(ctx, rectangleStyle);
 	ctx.fillRect(100, 100, 100, 100);
-	ctx.strokeStyle = "black";
-	ctx.fillStyle = "white";
-	ctx.textAlign = "center";
+	mergeLeft(ctx, testTextStyle);
 	camera.writeText("Test text", x1, y1);
 }
 

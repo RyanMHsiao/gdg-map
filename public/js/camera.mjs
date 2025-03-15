@@ -4,7 +4,7 @@
 
 // Compass stuff. The organization is weird, hopefully it makes sense to place it here
 import { Compass } from "./compass.mjs";
-import { addCameraListeners } from "./addcameralisteners.mjs";
+import { addCameraListeners, mergeLeft } from "./camerautils.mjs";
 
 class Camera {
 	// Affine transformation matrix
@@ -162,4 +162,4 @@ function distance(x1, y1, x2, y2) {
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
-export { Camera, addCameraListeners };
+export { Camera, addCameraListeners, mergeLeft };

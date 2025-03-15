@@ -1,9 +1,12 @@
-// Adds camera listeners using Hammerjs 
-// Uses closures instead of an object oriented style to store state
+// Some functions used to work with the camera that aren't methods of camera
+// Camera listeners use closures instead to store state instead of OOP
 // Written by Ryan Hsiao
 
-// TODO Add animation capabilities
+// Adds the event listeners that control the camera
+// Should be called once in main.mjs
 function addCameraListeners(camera) {
+	// TODO Add animation capabilities
+
 	// Adding a scroll wheel based zoom
 	// Not supported on all browsers, add buttons as alternative
 	$("#canvas").on("wheel", function (event) {
@@ -77,4 +80,12 @@ function addCameraListeners(camera) {
 	});
 }
 
-export { addCameraListeners };
+// Merges the properties of the right object into the left object in-place
+// Used to apply properties to CanvasRenderingContext2D from an object
+function mergeLeft(ctx, object) {
+	for (const property in object) {
+		ctx[property] = object[property];
+	}
+}
+
+export { addCameraListeners, mergeLeft };
