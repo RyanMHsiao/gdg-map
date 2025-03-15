@@ -38,8 +38,7 @@ class AffineTransformationMatrix {
 
 	// delta is an angle in radians (clockwise)
 	// x and y are the center of the rotation in pixels
-	// skipCompass skips updating the compass if rotation is called from compass
-	rotate(delta, x, y, skipCompass) {
+	rotate(delta, x, y) {
 		// We efficiently multiply rotation and scale matrix
 		this.theta += delta;
 		this.transform[0] = this.scaleFactor * Math.cos(this.theta);
@@ -82,11 +81,11 @@ class AffineTransformationMatrix {
 		return result;
 	}
 
-	// Translates to shift the center of the screen to a given world value
-	// We can add more functionality later like smooth transition and zooming
-	setCenterOn(x, y) {
-		[x, y] = this.worldToScreen(x, y);
-		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
+	// Enables some lazy calculations that we can implement later on
+	// Probably a very marginal optimization that might be cancelled by function overhead
+	// But this gives us a bit more flexibility to mess with the "private" members
+	applyTransform(ctx) {
+		ctx.setTransform(this.transform[0], this.transform[1], this.transform[2], this.transform[3], this.transform[4], this.transform[5]);
 	}
 }
 

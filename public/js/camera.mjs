@@ -44,7 +44,7 @@ class Camera {
 	// x and y are the center of the rotation in pixels
 	// skipCompass skips updating the compass if rotation is called from compass
 	rotate(delta, x, y, skipCompass) {
-		this.affine.rotate(delta, x, y, skipCompass);
+		this.affine.rotate(delta, x, y);
 		if (!skipCompass) {
 			this.compass.updateRotation(Math.PI/2 - this.affine.theta);
 		}
@@ -64,14 +64,23 @@ class Camera {
 	// Translates to shift the center of the screen to a given world value
 	// We can add more functionality later like smooth transition and zooming
 	setCenterOn(x, y) {
-		this.affine.setCenterOn(x, y);
+		[x, y] = this.worldToScreen(x, y);
+		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
 	}
 
 	// Sets the transformation to what the basemap expects
 	refreshTransform() {
-		this.ctx.setTransform(...this.affine.transform);
+		this.affine.applyTransform(this.ctx);
 	}
 
+
+	// Sets the transform two make two points on the world
+	// match up with two new points
+	// Imagine a staple fixing a new paper above the map
+	// using two points of contact, except the staple
+	// is capable of stretching
+	// The first four arguments are corners on the map
+	// and the last four arguments are corners on the new plane
 	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4) {
 		let oldAffine = this.affine;
 		let [x1, y1] = this.worldToScreen(worldX1, worldY1);
@@ -80,7 +89,7 @@ class Camera {
 		this.affine = new AffineTransformationMatrix();
 		this.translate(x1 - x3, y1 - y3);
 		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1, 0, Infinity);
-		this.rotate(-Math.atan2(x2 - x1, y2 - y1) + Math.atan2(x4 - x3, y4 - y3), x1, y1, true);
+		this.rotate(Math.atan2(x4 - x3, y4 - y3) - Math.atan2(x2 - x1, y2 - y1), x1, y1, true);
 		this.refreshTransform();
 		this.affine = oldAffine;
 	}
