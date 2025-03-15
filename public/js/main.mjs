@@ -34,12 +34,10 @@ function draw() {
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 	ctx.fillStyle = "blue";
 	ctx.fillRect(100, 100, 100, 100);
-	ctx.resetTransform();
 	ctx.strokeStyle = "black";
 	ctx.fillStyle = "white";
 	ctx.textAlign = "center";
-	ctx.strokeText("Test text", ...camera.worldToScreen(x1, y1));
-	ctx.fillText("Test text", ...camera.worldToScreen(x1, y1));
+	camera.writeText("Test text", x1, y1);
 }
 
 function resize() {

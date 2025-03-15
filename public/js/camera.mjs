@@ -143,6 +143,16 @@ class Camera {
 		this.scaleFactor = initScaleFactor;
 		this.theta = initTheta;
 	}
+
+	// Strokes and fills in text at a given position
+	writeText(text, worldX, worldY) {
+		// Calling resetTransform a bunch probably isn't a performance concern,
+		// but if it is it's not too hard to refactor repetitive calls away
+		this.ctx.resetTransform();
+		let [x, y] = this.worldToScreen(worldX, worldY);
+		this.ctx.strokeText(text, x, y);
+		this.ctx.fillText(text, x, y);
+	}
 }
 
 function distance(x1, y1, x2, y2) {
