@@ -33,8 +33,14 @@ class Camera {
 	// relativeScale is how much to scale relative to previous scale
 	// x and y are the center of the scale in pixels
 	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4) {
-		this.affine.scale(relativeScale, x, y, minScale, maxScale);
-		this.ctx.setTransform(...this.affine.transform);
+		let newScale;
+		/*
+		newScale = this.affine.scaleFactor * relativeScale;
+		newScale = Math.min(Math.max(minScale, newScale), maxScale);
+		// Change value if newScale got clamped
+		relativeScale = newScale / this.affine.scaleFactor;
+		*/
+		this.affine.scale(relativeScale, x, y, minScale, maxScale, newScale);
 	}
 
 	// delta is an angle in radians (clockwise)
@@ -70,7 +76,16 @@ class Camera {
 	}
 
 	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4) {
-		this.affine.staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4, this);
+		let oldAffine = this.affine;
+		let [x1, y1] = this.worldToScreen(worldX1, worldY1);
+		let [x2, y2] = this.worldToScreen(worldX2, worldY2);
+		this.ctx.resetTransform();
+		this.affine = new AffineTransformationMatrix();
+		this.translate(x1 - x3, y1 - y3);
+		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1, 0, Infinity);
+		this.rotate(-Math.atan2(x2 - x1, y2 - y1) + Math.atan2(x4 - x3, y4 - y3), x1, y1, true);
+		this.refreshTransform();
+		this.affine = oldAffine;
 	}
 
 	// Strokes and fills in text at a given position

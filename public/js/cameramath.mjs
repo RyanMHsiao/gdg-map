@@ -25,8 +25,8 @@ class AffineTransformationMatrix {
 
 	// relativeScale is how much to scale relative to previous scale
 	// x and y are the center of the scale in pixels
-	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4) {
-		let newScale = this.scaleFactor * relativeScale;
+	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4, newScale) {
+		newScale = this.scaleFactor * relativeScale;
 		newScale = Math.min(Math.max(minScale, newScale), maxScale);
 		// Change value if newScale got clamped
 		relativeScale = newScale / this.scaleFactor;
