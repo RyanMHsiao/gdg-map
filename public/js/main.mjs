@@ -1,14 +1,14 @@
 // Contains all top-level code for now
 // We may want to move some of the logic to a separate file later on
 
-import { Camera, addTransformListeners } from "./camera.mjs";
+import { Camera, addCameraListeners } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
 
-addTransformListeners(camera);
+addCameraListeners(camera);
 addSearchbarListeners(camera);
 
 const mercator = new SphereMercator({

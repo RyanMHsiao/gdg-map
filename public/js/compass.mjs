@@ -25,7 +25,6 @@ export class Compass {
 		let captureThis = this;
 		this.camera = camera;
 		this.mc.on("pan", function (event) {
-			console.log(event);
 			let prevTheta = captureThis.theta;
 			let offset = jQueryElement.offset();
 			let deltaY = event.srcEvent.y - offset.top - jQueryElement.height() / 2;
