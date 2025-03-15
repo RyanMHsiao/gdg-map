@@ -19,6 +19,8 @@ Dylan Ward
 
 Ella Drobenyuk
 
+Emmanuel Velasco
+
 Flavio Herrera
 
 Liuz Pokharel
@@ -32,3 +34,5 @@ Sohdai Yokokawa
 Thomas Morford
 
 Javier Miramontes
+
+
