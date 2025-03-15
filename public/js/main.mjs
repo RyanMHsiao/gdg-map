@@ -29,13 +29,15 @@ function draw() {
 	let [x2, y2] = mercator.f(37.357, -120.45);
 	ctx.beginPath();
 	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
-	ctx.fill();
-	ctx.beginPath();
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 	ctx.fillStyle = "blue";
 	ctx.fillRect(100, 100, 100, 100);
+	ctx.strokeStyle = "black";
+	ctx.fillStyle = "white";
+	ctx.textAlign = "center";
+	camera.writeText("Test text", x1, y1);
 }
 
 function resize() {
@@ -63,6 +65,6 @@ $(window).on("click", function (event) {
 		let [x, y] = [event.offsetX, event.offsetY];
 		let [worldX, worldY] = camera.screenToWorld(x, y);
 		let [lat, lon] = mercator.r(worldX, worldY);
-		console.log("lat, lon:", lat, lon);
+		console.log("lat, lon:", lat, lon, "worldX, worldY:", worldX, worldY, "screenX, screenY:", x, y);
 	}
 });

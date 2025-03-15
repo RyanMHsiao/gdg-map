@@ -17,14 +17,16 @@ For discussion, go to the Discord.
 
 Dylan Ward
 
+Ella Drobenyuk
+
+Flavio Herrera
+
 Liuz Pokharel
 
 Matthew Tou
 
 Ryan Hsiao
 
+Sohdai Yokokawa
+
 Thomas Morford
-
-Flavio Herrera
-
-Ella Drobenyuk
