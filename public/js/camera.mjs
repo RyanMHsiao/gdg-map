@@ -33,14 +33,11 @@ class Camera {
 	// relativeScale is how much to scale relative to previous scale
 	// x and y are the center of the scale in pixels
 	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4) {
-		let newScale;
-		/*
-		newScale = this.affine.scaleFactor * relativeScale;
+		let newScale = this.affine.scaleFactor * relativeScale;
 		newScale = Math.min(Math.max(minScale, newScale), maxScale);
 		// Change value if newScale got clamped
 		relativeScale = newScale / this.affine.scaleFactor;
-		*/
-		this.affine.scale(relativeScale, x, y, minScale, maxScale, newScale);
+		this.affine.scaleFromPoint(newScale, relativeScale, x, y);
 	}
 
 	// delta is an angle in radians (clockwise)

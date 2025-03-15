@@ -23,13 +23,9 @@ class AffineTransformationMatrix {
 		this.transform[5] += y;
 	}
 
-	// relativeScale is how much to scale relative to previous scale
-	// x and y are the center of the scale in pixels
-	scale(relativeScale, x, y, minScale = 0.125, maxScale = 4, newScale) {
-		newScale = this.scaleFactor * relativeScale;
-		newScale = Math.min(Math.max(minScale, newScale), maxScale);
-		// Change value if newScale got clamped
-		relativeScale = newScale / this.scaleFactor;
+	// Warning that the signature for this function is different from Camera.scale
+	// hence the different name
+	scaleFromPoint(newScale, relativeScale, x, y) {
 		for (let i = 0; i < 6; ++i) {
 			this.transform[i] *= relativeScale;
 		}
@@ -91,49 +87,6 @@ class AffineTransformationMatrix {
 	setCenterOn(x, y) {
 		[x, y] = this.worldToScreen(x, y);
 		this.translate(window.innerWidth / 2 - x, window.innerHeight / 2 - y);
-	}
-
-	// Sets the transformation to what the basemap expects
-	refreshTransform() {
-		this.ctx.setTransform(...this.transform);
-	}
-
-	// Sets the transform two make two points on the world
-	// match up with two new points
-	// Imagine a staple fixing a new paper above the map
-	// using two points of contact, except the staple
-	// is capable of stretching
-	// The first four arguments are corners on the map
-	// and the last four arguments are corners on the new plane
-	staple(worldX1, worldY1, worldX2, worldY2, x3, y3, x4, y4, camera) {
-		let initTransform = this.transform;
-		let initScaleFactor = this.scaleFactor;
-		let initTheta = this.theta;
-
-		let [x1, y1] = this.worldToScreen(worldX1, worldY1);
-		let [x2, y2] = this.worldToScreen(worldX2, worldY2);
-		camera.ctx.resetTransform();
-		this.transform = [1, 0, 0, 1, 0, 0];
-		this.scaleFactor = 1;
-		this.theta = 0;
-		this.translate(x1 - x3, y1 - y3);
-		this.scale(distance(x1, y1, x2, y2) / distance(x3, y3, x4, y4), x1, y1, 0, Infinity);
-		this.rotate(-Math.atan2(x2 - x1, y2 - y1) + Math.atan2(x4 - x3, y4 - y3), x1, y1, true);
-		camera.refreshTransform();
-
-		this.transform = initTransform;
-		this.scaleFactor = initScaleFactor;
-		this.theta = initTheta;
-	}
-
-	// Strokes and fills in text at a given position
-	writeText(text, worldX, worldY) {
-		// Calling resetTransform a bunch probably isn't a performance concern,
-		// but if it is it's not too hard to refactor repetitive calls away
-		this.ctx.resetTransform();
-		let [x, y] = this.worldToScreen(worldX, worldY);
-		this.ctx.strokeText(text, x, y);
-		this.ctx.fillText(text, x, y);
 	}
 }
 
