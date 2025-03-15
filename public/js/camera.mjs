@@ -1,9 +1,11 @@
-// The purpose of this file is to abstract away most of the math
-// Read up on affine transformations to help you understand it
-// Written by Ryan Hsiao, so ask me if you need help
+// The camera controls transformations to make sure everything is
+// displayed with the correct positioning on the map
+// All the code here assumes that the distortion for the curvature
+// of the Earth is already handled by the cartography file
+// Written by Ryan Hsiao
 
-// Compass stuff. The organization is weird, hopefully it makes sense to place it here
 import { Compass } from "./compass.mjs";
+import { distance } from "./cameramath.mjs";
 import { addCameraListeners, mergeLeft } from "./camerautils.mjs";
 
 class Camera {
@@ -154,12 +156,6 @@ class Camera {
 		this.ctx.strokeText(text, x, y);
 		this.ctx.fillText(text, x, y);
 	}
-}
-
-function distance(x1, y1, x2, y2) {
-	let dx = x1 - x2;
-	let dy = y1 - y2;
-	return Math.sqrt(dx * dx + dy * dy);
 }
 
 export { Camera, addCameraListeners, mergeLeft };
