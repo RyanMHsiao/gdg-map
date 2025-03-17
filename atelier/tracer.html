@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Floor plan tracer</title>
+		<style>
+html {
+	cursor: grab; /* Plan to conditionally change to pointer */
+	overflow: hidden;
+}
+
+#canvas {
+	position: absolute;
+	z-index: 0;
+	/*
+	Causes stretching of canvas
+	width: 100vw;
+	height: 100vh;
+	*/
+	top: 0;
+	left: 0;
+}
+
+.hidden-image {
+	z-index: -100;
+	visibility: hidden;
+}
+
+#compass {
+	position: absolute;
+	z-index: 100;
+	background-color: white;
+	top: max(5vh, 5vw);
+	left: max(5vh, 5vw);
+	font-size: 20pt;
+}
+
+/* Things like centering and size can be added later */
+#searchbar {
+	position: absolute;
+	z-index: 150;
+	top: 0.5em;
+	margin: auto;
+}
+		</style>
+    </head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<div hidden id="compass">&lt;N</div>
+		<div id="searchbar"> <!-- May add more elements around bar or add jQuery UI stuff -->
+			<input hidden id="searchbar-data">
+			<button id="searchbar-submit">Go!</button>
+		</div>
+		<img id="background-map" class="hidden-image" style="visibility:hidden;" src="assets/tracer-default.png"></img>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+		<script type="module" src="./tracer-js/main.mjs"></script>
+	</body>
+</html>
