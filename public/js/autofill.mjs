@@ -48,24 +48,33 @@ class MultiMatcher {
 	// match is case insensitive for the input, x[i...x.length]
 	// HOWEVER: the instance owner must ensure inserted strings are
 	// lowercase, as ONLY x is made lowercase during the match
-	match(x, i=0) {
-		let same = i;
+	match(x) {
+		let i = 0;
+		let same = 0;
 		let ml = 0;
-		if (x.length - i > this.str.length)
-			ml = this.str.length + i;
-		else
-			ml = x.length;
-		while (same < ml && this.str[same - i] == x[same].toLowerCase()) {
-			same++;
+		let l = 0;
+		let cur = this;
+	again:
+		for (;;) {
+			if (x.length - i > cur.str.length)
+				ml = cur.str.length + i;
+			else
+				ml = x.length;
+			while (same < ml && cur.str[same - i] == x[same].toLowerCase()) {
+				same++;
+			}
+			l = same - i;
+			if (same == x.length)
+				return cur;
+			for (const n of cur.next) {
+				if (n.str.length > 0 && n.str[0] == x[same].toLowerCase()) {
+					cur = n;
+					i = same;
+					continue again;
+				}
+			}
+			return null;
 		}
-		let l = same - i;
-		if (same == x.length)
-			return this;
-		for (const n of this.next) {
-			if (n.str.length > 0 && n.str[0] == x[same])
-				return n.match(x, same);
-		}
-		return null;
 	}
 
 	walk(act) {
@@ -89,7 +98,12 @@ function setupAutofill() {
 		entry.onclick = (ev) => {
 			ev.stopPropagation();
 			sbInput.value = ev.target.innerHTML;
+			for (let entry of sbResults.children) {
+				entry.hidden = true;
+			}
 			// TODO: do the search, move and zoom map, etc.
+			// perhaps call searchbar.mjs:focusOn
+			// perhaps merge this file into searchbar.mjs
 		};
 		let altNames = entry.dataset["alt"];
 		if (altNames) {
@@ -100,6 +114,7 @@ function setupAutofill() {
 		}
 		afTargets.insert(entry.innerHTML.toLowerCase(), entry);
 	}
+	sbInput.addEventListener("focus", () => sbInput.select());
 	sbInput.addEventListener("input", (ev) => {
 		// Here, we go over the input string completely each call even
 		// if only one character changed, because the event does not
@@ -109,9 +124,9 @@ function setupAutofill() {
 		}
 		let found = afTargets.match(sbInput.value);
 		if (found && found != afTargets) {
-			found.walk((n) => {
-				if (n)
-					n.hidden = false;
+			found.walk((v) => {
+				if (v)
+					v.hidden = false;
 			});
 		}
 	});
