@@ -4,6 +4,7 @@
 import { Camera, addCameraListeners, mergeLeft } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
+import { setupAutofill } from "./autofill.mjs";
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
@@ -59,6 +60,7 @@ $(window).on("resize", function (e) {
 
 resize();
 draw();
+setupAutofill();
 
 // Debugging help
 window.draw = draw;
