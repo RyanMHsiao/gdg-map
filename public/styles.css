@@ -36,3 +36,21 @@ html {
 	top: 0.5em;
 	margin: auto;
 }
+
+#searchbar-results {
+	color: white;
+	background-color: black;
+}
+
+#searchbar-results p {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	padding-left: 3px;
+	border: 1px solid #ccc;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+#searchbar-results p:hover {
+	color: black;
+	background-color: white;
+}
