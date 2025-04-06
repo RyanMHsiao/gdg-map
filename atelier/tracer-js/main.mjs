@@ -20,6 +20,7 @@ function setImage(src) {
 }
 
 window.vertices = [];
+window.labels = [];
 
 let lastX = 0, lastY = 0;
 $(window).on("mousemove", function (event) {
@@ -32,14 +33,20 @@ $(window).on("keydown", function (event) {
 		let [x, y] = [lastX, lastY];
 		let worldPos = camera.screenToWorld(x, y);
 		vertices.push(worldPos);
+		labels.push(prompt("What is the name of the point you added?"));
 	} else if (event.key == "r") {
 		vertices.pop();
+		labels.pop();
 	}
 	draw();
 });
 
+const backgroundStyle = { fillStyle: "white" };
 const pointStyle = { fillStyle: "crimson" };
 function draw() {
+	ctx.resetTransform();
+	mergeLeft(ctx, backgroundStyle);
+	ctx.fillRect(0, 0, document.body.offsetWidth, document.body.offsetHeight);
 	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);
@@ -47,13 +54,7 @@ function draw() {
 	// Here, I use the mercator object to convert my latitude and longitude
 	// into a format that ctx can understand
 	mergeLeft(ctx, pointStyle);
-	ctx.beginPath();
-	let pathBegun = false;
-	vertices.forEach(point => {
-		ctx.fillRect(point[0] - 5, point[1] - 5, 10, 10);
-		(pathBegun ? ctx.lineTo(...point) : pathBegun = true, ctx.moveTo(...point))
-	});
-	ctx.stroke();
+	vertices.forEach(x => ctx.fillRect(x[0] - 2, x[1] - 2, 4, 4));
 }
 
 function resize() {
