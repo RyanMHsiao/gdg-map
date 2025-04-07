@@ -28,12 +28,14 @@ const testTextStyle = {
 	textAlign: "center"
 };
 function draw() {
+	// Clear the canvas with transparency
 	ctx.resetTransform();
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, document.body.offsetWidth, document.body.offsetHeight);
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
 	camera.refreshTransform();
+
 	// TODO Move the logic for this call to camera for abstraction
-	ctx.drawImage($("#background-map")[0], 0, 0);
+	// ctx.drawImage($("#background-map")[0], 0, 0);
 	// Feel free to experiment by adding some canvas draw calls here
 	// Here, I use the mercator object to convert my latitude and longitude
 	// into a format that ctx can understand
@@ -43,6 +45,7 @@ function draw() {
 	ctx.beginPath();
 	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
+	ctx.closePath(); // Not sure if this is necessary
 	ctx.fill();
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 	mergeLeft(ctx, rectangleStyle);
