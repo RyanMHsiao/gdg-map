@@ -20,6 +20,12 @@ html {
 	visibility: hidden;
 }
 
+#base-svg {
+	z-index: -50;
+	top: 0;
+	left: 0;
+}
+
 #compass {
 	position: absolute;
 	z-index: 100;
