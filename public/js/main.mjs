@@ -37,7 +37,7 @@ function draw() {
 	// Use CSS transforms to manipulate the background SVG
 	// TODO Move the logic for this call to camera for abstraction
 	$("#base-svg").css({
-		transform: `matrix(${camera.affine.transform.join(", ")})`,
+		transform: `rotate(${camera.affine.theta}rad) scale(${camera.affine.scaleFactor}) translate(${camera.affine.transform[4]}px, ${camera.affine.transform[5]}px)`,
 		"z-index": -50
 	});
 
