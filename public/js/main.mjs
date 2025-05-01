@@ -5,6 +5,7 @@ import { Camera, addCameraListeners, mergeLeft } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 import { setupAutofill } from "./autofill.mjs";
+import { roomData } from "./features.mjs";
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
@@ -44,6 +45,11 @@ function draw() {
 	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
 	ctx.fill();
+	for (const building in roomData) {
+		camera.staple(...roomData[building].staple);
+		roomData[building].floor2.forEach(([x, y, s]) => camera.writeText(s, x, y));
+	}
+
 	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
 	mergeLeft(ctx, rectangleStyle);
 	ctx.fillRect(100, 100, 100, 100);
