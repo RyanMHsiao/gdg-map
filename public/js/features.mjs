@@ -2,7 +2,7 @@
 // The format does not follow GeoJSON or any other existing standard.
 // The current goal is simply to have coordinates and a label for our points.
 
-export let roomData = {
+export const roomData = {
 	admin: {
 		"staple": [ 0, 0, 100, 100, 0, 0, 100, 100 ],
 		"floor2": [
@@ -16,4 +16,8 @@ export let roomData = {
 			[ 1495.2461252903943, 2205.7306003402746, "255" ]
 		] 
 	}
+}
+
+export const buildingCoords = {
+	admin: [ 1490, 2230 ]
 }
