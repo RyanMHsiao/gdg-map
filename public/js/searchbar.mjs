@@ -4,6 +4,7 @@
 // TODO Replace with actual data mapped through a SphereMercator transformation
 let tempFeatures = {
 	"Administration Building": { x: 1490, y: 2230 },
+	"Classroom Office Building 2": { x: 674.8995737784484, y: 1921.3639670857553 }
 }
 
 function focusOn(camera, feature) {
