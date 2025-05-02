@@ -3,8 +3,7 @@
 // These are in pixel values for now
 // TODO Replace with actual data mapped through a SphereMercator transformation
 let tempFeatures = {
-	"pointa": { x: 3635, y: 919 },
-	"pointb": { x: 3365, y: 1288 }
+	"Administration Building": { x: 1490, y: 2230 },
 }
 
 function focusOn(camera, feature) {
