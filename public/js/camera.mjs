@@ -16,6 +16,8 @@ class Camera {
 	ctx;
 	// Compass is here so that we can link it to the canvas transformations
 	compass;
+	// For rendering to look at
+	floor;
 
 	constructor(ctx, skipCompass) {
 		this.affine = new AffineTransformationMatrix();

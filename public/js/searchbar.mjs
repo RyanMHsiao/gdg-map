@@ -7,6 +7,11 @@ let tempFeatures = {
 }
 
 function focusOn(camera, feature) {
+	// Quick hack since there's no UI for floor picker
+	if (!isNaN(feature)) {
+		camera.floor = feature;
+		return;
+	}
 	if (tempFeatures[feature] == undefined) {
 		alert(`The feature ${feature} doesn't exist`);
 		return;

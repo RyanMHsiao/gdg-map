@@ -49,7 +49,8 @@ function draw() {
 	if (camera.affine.scaleFactor > 2.4) {
 		mergeLeft(ctx, roomTextStyle);
 		for (const building in roomData) {
-			roomData[building].floor2.forEach(([x, y, s]) => camera.writeText(s, x, y));
+			let floor = roomData[building]["floor" + camera.floor] || roomData[building][roomData[building].main];
+			floor.forEach(([x, y, s]) => camera.writeText(s, x, y));
 		}
 	} else {
 		mergeLeft(ctx, bigTextStyle);
