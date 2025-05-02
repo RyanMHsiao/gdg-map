@@ -36,7 +36,8 @@ const bigTextStyle = {
 function draw() {
 	ctx.resetTransform();
 	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, document.body.offsetWidth, document.body.offsetHeight);
+	// Multiply size by 2 as quick hack to prevent hall of mirrors effect
+	ctx.fillRect(0, 0, 2 * document.body.offsetWidth, 2 * document.body.offsetHeight);
 	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);

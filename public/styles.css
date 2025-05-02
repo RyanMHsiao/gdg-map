@@ -23,7 +23,7 @@ html {
 #compass {
 	position: absolute;
 	z-index: 100;
-	background-color: white;
+	background-color: transparent;
 	top: max(5vh, 5vw);
 	left: max(5vh, 5vw);
 	font-size: 20pt;
