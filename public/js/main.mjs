@@ -5,6 +5,7 @@ import { Camera, addCameraListeners, mergeLeft } from "./camera.mjs";
 import { Equirectangular, SphereMercator } from "./cartography.mjs";
 import { addSearchbarListeners } from "./searchbar.mjs";
 import { setupAutofill } from "./autofill.mjs";
+import { roomData, buildingCoords } from "./features.mjs";
 
 const ctx = $("#canvas")[0].getContext("2d");
 const camera = new Camera(ctx);
@@ -18,19 +19,25 @@ const mercator = new SphereMercator({
 });
 window.mercator = mercator;
 
-const ellipseStyle = { fillStyle: "crimson" };
-const rectangleStyle = { fillStyle: "blue" };
-const testTextStyle = {
+const roomTextStyle = {
 	fillStyle: "white",
 	strokeStyle: "black",
 	lineWidth: 4,
-	font: "20px",
+	font: "24px Arial",
+	textAlign: "center"
+};
+const bigTextStyle = {
+	fillStyle: "white",
+	strokeStyle: "black",
+	lineWidth: 8,
+	font: "50px Arial",
 	textAlign: "center"
 };
 function draw() {
 	ctx.resetTransform();
 	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, document.body.offsetWidth, document.body.offsetHeight);
+	// Multiply size by 2 as quick hack to prevent hall of mirrors effect
+	ctx.fillRect(0, 0, 2 * document.body.offsetWidth, 2 * document.body.offsetHeight);
 	camera.refreshTransform();
 	// TODO Move the logic for this call to camera for abstraction
 	ctx.drawImage($("#background-map")[0], 0, 0);
@@ -39,16 +46,21 @@ function draw() {
 	// into a format that ctx can understand
 	let [x1, y1] = mercator.f(37.358, -120.44);
 	let [x2, y2] = mercator.f(37.357, -120.45);
-	mergeLeft(ctx, ellipseStyle);
-	ctx.beginPath();
-	ctx.ellipse(x1, y1, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
-	ctx.ellipse(x2, y2, 100, 100, Math.PI / 4, 0, 2 * Math.PI);
-	ctx.fill();
-	camera.staple(x1, y1, x2, y2, 100, 100, 200, 200);
-	mergeLeft(ctx, rectangleStyle);
-	ctx.fillRect(100, 100, 100, 100);
-	mergeLeft(ctx, testTextStyle);
-	camera.writeText("Test text", x1, y1);
+	if (camera.affine.scaleFactor > 2.4) {
+		mergeLeft(ctx, roomTextStyle);
+		for (const building in roomData) {
+			let floor = roomData[building]["floor" + camera.floor] ?? roomData[building][roomData[building].main];
+			floor.forEach(([x, y, s]) => camera.writeText(s, x, y));
+		}
+	} else {
+		mergeLeft(ctx, bigTextStyle);
+		if (camera.affine.scaleFactor < 0.95) {
+			ctx.font = "24px Arial";
+		}
+		for (const building in buildingCoords) {
+			camera.writeText(building, ...buildingCoords[building]);
+		}
+	}
 }
 
 function resize() {
